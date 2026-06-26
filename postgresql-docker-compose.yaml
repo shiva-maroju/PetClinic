@@ -1,0 +1,36 @@
+---
+name: spring-petclinic
+services:
+  petclinic_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #container_name: petclinic
+    ports:
+      - "8080:8080"
+    networks:
+      - petclinic-network
+    depends_on:
+      - petclinic_database  
+  
+  petclinic_database:
+    image: postgres:18.3
+    #container_name: petclinic_postgresql_server
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=spcpw
+      - POSTGRES_USER=spcuser
+      - POSTGRES_DB=spcdb
+    volumes:
+      - petclinic-volume:/var/lib/postgresql:rw
+    networks:
+      - petclinic-network
+
+volumes:
+  petclinic-volume:
+networks:
+  petclinic-network:
+
+
+
+docker run -e POSTGRES_USER=petclinic -e POSTGRES_PASSWORD=petclinic -e POSTGRES_DB=petclinic -p 5432:5432 postgres:18.3

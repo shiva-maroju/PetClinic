@@ -1,0 +1,34 @@
+---
+name: spring-petclinic
+services:
+  petclinic_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #container_name: petclinic
+    ports:
+      - "8080:8080"
+    networks:
+      - petclinic-network
+    depends_on:
+      - petclinic_database  
+  
+  petclinic_database:
+    image: mysql:9.6
+    #container_name: petclinic_mysql_server
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=spcadmin
+      - MYSQL_DATABASE=spcdb
+      - MYSQL_USER=spcuser
+      - MYSQL_PASSWORD=spcpw
+    volumes:
+      - petclinic-volume:/var/lib/mysql:rw
+    networks:
+      - petclinic-network
+
+volumes:
+  petclinic-volume:
+networks:
+  petclinic-network:
+
